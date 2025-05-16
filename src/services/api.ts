@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Set up API base URL - replace with your actual backend URL when deploying
-const API_URL = 'http://localhost:8000/api/';
+const API_URL = 'https://moodup.onrender.com/api/';
 
 // Create axios instance with base configuration
 const apiClient = axios.create({
