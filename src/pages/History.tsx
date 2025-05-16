@@ -1,37 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import MoodCalendar from '../components/MoodCalendar';
+import { moodApi } from '../services/api';
+import { MoodEntry } from '../types';
+
+interface ProcessedMoodEntry {
+  date: string;
+  predictedMood: number;
+  actualMood?: number;
+}
+
+// Update the MoodCalendar component's expected prop type
+interface MoodCalendarProps {
+  moodHistory: ProcessedMoodEntry[];
+}
+
+// We're assuming MoodCalendar accepts this prop type now
+const MoodCalendarWithProps = MoodCalendar as React.FC<MoodCalendarProps>;
 
 const History: React.FC = () => {
-  // Mock mood history data
-  const moodHistory = [
-    { date: '2023-10-01', predictedMood: 85, actualMood: 82 },
-    { date: '2023-10-02', predictedMood: 75, actualMood: 70 },
-    { date: '2023-10-03', predictedMood: 65, actualMood: 60 },
-    { date: '2023-10-04', predictedMood: 80, actualMood: 85 },
-    { date: '2023-10-05', predictedMood: 70, actualMood: 72 },
-    { date: '2023-10-06', predictedMood: 75, actualMood: 74 },
-    { date: '2023-10-07', predictedMood: 85, actualMood: 80 },
-    { date: '2023-10-08', predictedMood: 90, actualMood: 88 },
-    { date: '2023-10-09', predictedMood: 80, actualMood: 75 },
-    { date: '2023-10-10', predictedMood: 70, actualMood: 72 },
-    { date: '2023-10-11', predictedMood: 65, actualMood: 60 },
-    { date: '2023-10-12', predictedMood: 75, actualMood: 80 },
-    { date: '2023-10-13', predictedMood: 85, actualMood: 75 },
-    { date: '2023-10-14', predictedMood: 70 }, // No actual mood yet
-  ];
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [moodHistory, setMoodHistory] = useState<ProcessedMoodEntry[]>([]);
 
-  // Get current date in the required format
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch mood entries and trend data
+        const [moodsResponse, trendResponse] = await Promise.all([
+          moodApi.getAll(),
+          moodApi.getWeeklyTrend()
+        ]);
+        
+        // Process mood entries
+        const moodEntries: MoodEntry[] = moodsResponse.data;
+        
+        // Create the processed history data
+        const processedHistory: ProcessedMoodEntry[] = moodEntries.map(entry => ({
+          date: entry.date,
+          actualMood: entry.value * 10, // Convert 0-10 scale to 0-100 for UI consistency
+          predictedMood: 75 // Default value
+        }));
+        
+        // Add prediction data from trend if available
+        if (trendResponse.data.dates && trendResponse.data.values) {
+          trendResponse.data.dates.forEach((date: string, index: number) => {
+            const existingEntry = processedHistory.find(entry => entry.date === date);
+            const predictedValue = trendResponse.data.values[index] * 10; // Convert 0-10 scale to 0-100
+            
+            if (existingEntry) {
+              existingEntry.predictedMood = predictedValue;
+            } else {
+              processedHistory.push({
+                date,
+                predictedMood: predictedValue
+              });
+            }
+          });
+        }
+        
+        // Get current date and add it if not already present
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const today = `${year}-${month}-${day}`;
+        
+        if (!processedHistory.find(entry => entry.date === today)) {
+          processedHistory.push({ date: today, predictedMood: 75 });
+        }
+        
+        setMoodHistory(processedHistory);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching mood history:', err);
+        setError('Failed to load mood history. Please try again later.');
+        
+        // Use mock data as fallback
+        setMoodHistory([
+          { date: '2023-10-01', predictedMood: 85, actualMood: 82 },
+          { date: '2023-10-02', predictedMood: 75, actualMood: 70 },
+          { date: today, predictedMood: 75 }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
+  // Get current date in the required format for fallback
   const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, '0');
   const day = String(currentDate.getDate()).padStart(2, '0');
-  
-  // Update mock data to include current date
   const today = `${year}-${month}-${day}`;
-  if (!moodHistory.find(entry => entry.date === today)) {
-    moodHistory.push({ date: today, predictedMood: 75 });
-  }
 
   // Calculate accuracy between predicted and actual moods
   const moodsWithActual = moodHistory.filter(entry => entry.actualMood !== undefined);
@@ -43,6 +109,16 @@ const History: React.FC = () => {
   const accuracy = moodsWithActual.length > 0 
     ? Math.round((accuracySum / moodsWithActual.length) * 100) 
     : 0;
+    
+  // Calculate average mood
+  const moodsWithActualValue = moodHistory.filter(entry => entry.actualMood !== undefined);
+  const averageMood = moodsWithActualValue.length > 0
+    ? Math.round(moodsWithActualValue.reduce((sum, entry) => sum + (entry.actualMood || 0), 0) / moodsWithActualValue.length)
+    : 0;
+
+  if (loading) {
+    return <div className="neuro-container flex justify-center items-center h-screen">Loading...</div>;
+  }
 
   return (
     <div className="neuro-container pb-24">
@@ -52,6 +128,12 @@ const History: React.FC = () => {
           <span className="text-purple-600 font-semibold">TB</span>
         </div>
       </header>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          {error}
+        </div>
+      )}
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div className="neuro-card text-center">
@@ -66,13 +148,11 @@ const History: React.FC = () => {
         
         <div className="neuro-card text-center">
           <div className="text-xs text-gray-500 mb-1">Average Mood</div>
-          <div className="text-3xl font-bold text-blue-500">
-            {Math.round(moodsWithActual.reduce((sum, entry) => sum + (entry.actualMood || 0), 0) / moodsWithActual.length)}
-          </div>
+          <div className="text-3xl font-bold text-blue-500">{averageMood}</div>
         </div>
       </div>
       
-      <MoodCalendar moodHistory={moodHistory} />
+      <MoodCalendarWithProps moodHistory={moodHistory} />
       
       <div className="mt-6 neuro-card">
         <h3 className="text-lg font-semibold mb-4 text-purple-500">Recent Mood History</h3>
