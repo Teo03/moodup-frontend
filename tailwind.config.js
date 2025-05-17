@@ -54,6 +54,22 @@ export default {
 					DEFAULT: "hsl(var(--card))",
 					foreground: "hsl(var(--card-foreground))",
 				},
+				// Theme core colors
+				teal: {
+					DEFAULT: "#3BA181",
+					light: "hsl(160, 48%, 60%)",
+					dark: "hsl(160, 48%, 25%)"
+				},
+				yellow: {
+					DEFAULT: "#FFD80B", 
+					light: "hsl(43, 100%, 70%)",
+					dark: "hsl(43, 100%, 40%)"
+				},
+				tan: {
+					DEFAULT: "#C0A883",
+					light: "hsl(36, 28%, 75%)",
+					dark: "hsl(36, 28%, 45%)"
+				}
 			},
 			borderRadius: {
 				lg: "var(--radius)",

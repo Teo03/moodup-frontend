@@ -4,79 +4,83 @@
  
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Primary theme colors */
+    --teal-hsl: 160 48% 38%;       /* #3BA181 */
+    --yellow-hsl: 43 100% 52%;     /* #FFD80B */
+    --tan-hsl: 36 28% 63%;         /* #C0A883 */
+    --white-hsl: 0 0% 100%;        /* #FFFFFF */
+    
+    /* Base theme */
+    --background: var(--white-hsl);
+    --foreground: var(--teal-hsl);
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: var(--white-hsl);
+    --card-foreground: var(--teal-hsl);
  
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: var(--white-hsl);
+    --popover-foreground: var(--teal-hsl);
  
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: var(--teal-hsl);
+    --primary-foreground: var(--white-hsl);
  
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: var(--yellow-hsl);
+    --secondary-foreground: var(--white-hsl);
  
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: var(--tan-hsl);
+    --muted-foreground: var(--teal-hsl);
  
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: var(--yellow-hsl);
+    --accent-foreground: var(--white-hsl);
  
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: var(--white-hsl);
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: var(--tan-hsl);
+    --input: var(--tan-hsl);
+    --ring: var(--yellow-hsl);
  
     --radius: 0.5rem;
 
-    /* Neumorphic colors */
-    --neuro-bg: 240, 45%, 98%;
-    --neuro-shadow-dark: 240, 30%, 88%; 
+    /* Neumorphic colors using the theme */
+    --neuro-bg: 160, 48%, 95%;
+    --neuro-shadow-dark: 160, 48%, 85%;
     --neuro-shadow-light: 0, 0%, 100%;
-    --purple-primary: 267, 75%, 80%;
-    --green-accent: 151, 65%, 75%;
   }
  
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode theme */
+    --background: 160 48% 12%;
+    --foreground: var(--white-hsl);
  
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 160 48% 15%;
+    --card-foreground: var(--white-hsl);
  
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 160 48% 12%;
+    --popover-foreground: var(--white-hsl);
  
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: var(--teal-hsl);
+    --primary-foreground: var(--white-hsl);
  
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: var(--yellow-hsl);
+    --secondary-foreground: var(--white-hsl);
  
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: var(--tan-hsl);
+    --muted-foreground: var(--white-hsl);
  
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: var(--tan-hsl);
+    --accent-foreground: var(--white-hsl);
  
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: var(--white-hsl);
  
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: var(--tan-hsl);
+    --input: var(--tan-hsl);
+    --ring: var(--yellow-hsl);
 
     /* Neumorphic colors for dark mode */
-    --neuro-bg: 222, 30%, 12%;
-    --neuro-shadow-dark: 222, 30%, 8%; 
-    --neuro-shadow-light: 222, 30%, 16%;
-    --purple-primary: 267, 75%, 60%;
-    --green-accent: 151, 65%, 55%;
+    --neuro-bg: 160, 48%, 15%;
+    --neuro-shadow-dark: 160, 48%, 10%;
+    --neuro-shadow-light: 160, 48%, 20%;
   }
 }
  
