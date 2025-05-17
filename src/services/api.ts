@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { Location } from '../types';
 
 // Set up API base URL - replace with your actual backend URL when deploying
-const API_URL = 'https://moodup.onrender.com/api/';
+const API_URL = 'http://localhost:8000/api/';
 
 // Create axios instance with base configuration
 const apiClient = axios.create({
@@ -28,14 +29,23 @@ export const moodApi = {
   // Delete a mood entry
   delete: (id: number) => apiClient.delete(`moods/${id}/`),
   
-  // Get mood statistics
-  getStatistics: () => apiClient.get('statistics/'),
-  
-  // Get weekly mood trends
-  getWeeklyTrend: () => apiClient.get('trends/weekly/'),
-  
-  // Get mood recommendations
-  getRecommendations: () => apiClient.get('recommendations/'),
+  // Get mood statistics and recommendations
+  getStatistics: (location?: Location) => {
+    let url = 'statistics/';
+    
+    // Add location parameters if available
+    if (location) {
+      const params = new URLSearchParams();
+      params.append('lat', location.latitude.toString());
+      params.append('lon', location.longitude.toString());
+      if (location.name) {
+        params.append('location_name', location.name);
+      }
+      url += `?${params.toString()}`;
+    }
+    
+    return apiClient.get(url);
+  }
 };
 
 export default apiClient; 

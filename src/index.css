@@ -121,4 +121,35 @@
     @apply absolute;
     stroke-linecap: round;
   }
+  
+  /* Animations */
+  .animate-ring-appear {
+    animation: ring-appear 1s cubic-bezier(0.26, 0.86, 0.44, 0.985) forwards;
+  }
+  
+  .animate-fade-in {
+    opacity: 0;
+    animation: fade-in 0.5s ease-out forwards;
+  }
+  
+  @keyframes ring-appear {
+    from {
+      stroke-dashoffset: 100%;
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
