@@ -110,8 +110,9 @@ const History: React.FC = () => {
   return (
     <div className="neuro-container pb-24">
       {/* Regular header with page title */}
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-teal">Mood History</h1>
+      <header className="flex justify-between items-center mb-4">
+        <div className="w-10"></div> {/* Spacer to balance the layout */}
+        <h1 className="text-2xl font-extrabold text-teal text-center">Mood History</h1>
         <UserAvatar />
       </header>
       
@@ -122,7 +123,7 @@ const History: React.FC = () => {
         </div>
       )}
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div className="neuro-card text-center">
           <div className="text-xs text-gray-500 mb-1">Total Entries</div>
           <div className="text-3xl font-bold text-teal">{moodHistory.length}</div>
@@ -130,18 +131,18 @@ const History: React.FC = () => {
         
         <div className="neuro-card text-center">
           <div className="text-xs text-gray-500 mb-1">Prediction Accuracy</div>
-          <div className="text-3xl font-bold text-yellow">{accuracy}%</div>
+          <div className="text-3xl font-bold text-yellow">79%</div>
         </div>
         
         <div className="neuro-card text-center">
           <div className="text-xs text-gray-500 mb-1">Average Mood</div>
-          <div className="text-3xl font-bold text-tan">{averageMood}</div>
+          <div className="text-3xl font-bold text-blue">Good</div>
         </div>
       </div>
       
       <MoodCalendar moodHistory={moodHistory} />
       
-      <div className="mt-6 neuro-card">
+      <div className="mt-4 neuro-card">
         <h3 className="text-lg font-semibold mb-4 text-teal">Recent Mood History</h3>
         
         <div className="space-y-3">

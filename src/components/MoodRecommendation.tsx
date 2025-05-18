@@ -16,11 +16,11 @@ const MoodRecommendation: React.FC<MoodRecommendationProps> = ({
           <h3 className="text-xl font-semibold mb-4 text-green-600">Recommendations</h3>
           <ul className="space-y-4">
             {recommendations.map((recommendation, index) => (
-              <li key={index} className="flex items-center group transition-all duration-300 hover:translate-x-1">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center text-white font-medium shadow-md mr-3 group-hover:shadow-lg transition-all duration-300">
+              <li key={index} className="flex items-start sm:items-center group transition-all duration-300 hover:translate-x-1">
+                <div className="h-8 w-8 flex-shrink-0 rounded-full bg-gradient-to-br from-green-400 to-teal-500 flex items-center justify-center text-white font-medium shadow-md mr-3 group-hover:shadow-lg transition-all duration-300">
                   {index + 1}
                 </div>
-                <p className="text-gray-700 font-medium">{recommendation.description}</p>
+                <p className="text-gray-700 font-medium pt-1 sm:pt-0">{recommendation.description}</p>
               </li>
             ))}
           </ul>

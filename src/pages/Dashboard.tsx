@@ -11,12 +11,19 @@ import { MoodStatistics } from '../types';
 import { useAppContext } from '../services/AppContext';
 
 // AI Mood Analysis Component
-const AIMoodAnalysis = ({ moodAnalysis }: { moodAnalysis: MoodStatistics['ai_mood_analysis'] }) => {
+const AIMoodAnalysis = ({ moodAnalysis, moodScore = 50 }: { moodAnalysis: MoodStatistics['ai_mood_analysis'], moodScore?: number }) => {
   if (!moodAnalysis) return null;
   
+  // Get color based on mood score
+  const getMoodThemeColor = () => {
+    if (moodScore >= 60) return 'text-teal';
+    if (moodScore >= 40) return 'text-blue';
+    return 'text-red-700';
+  };
+  
   return (
-    <div className="neuro-card mb-6 animate-fade-in">
-      <h3 className="text-lg font-semibold text-teal mb-3">AI Mood Analysis ✨</h3>
+    <div className="neuro-card mb-4 animate-fade-in">
+      <h3 className={`text-lg font-semibold ${getMoodThemeColor()} mb-3`}>AI Mood Analysis ✨</h3>
       
       <div className="mb-4">
         <p className="text-gray-700">{moodAnalysis.mood_description}</p>
@@ -24,12 +31,12 @@ const AIMoodAnalysis = ({ moodAnalysis }: { moodAnalysis: MoodStatistics['ai_moo
       
       <div className="flex flex-wrap gap-3">
         <div className="neuro-inset py-2 px-4 text-sm">
-          <span className="text-teal font-medium">Emotional State: </span>
+          <span className={`${getMoodThemeColor()} font-medium`}>Emotional State: </span>
           <span className="capitalize">{moodAnalysis.emotional_state}</span>
         </div>
         
         <div className="neuro-inset py-2 px-4 text-sm flex-1">
-          <span className="text-yellow font-medium">Insight: </span>
+          <span className={`${moodScore >= 40 ? "text-yellow" : "text-blue"} font-medium`}>Insight: </span>
           <span>{moodAnalysis.mood_insight}</span>
         </div>
       </div>
@@ -75,21 +82,12 @@ const Dashboard: React.FC = () => {
     if (!locationLoading) {
       fetchData();
     }
-  }, [location, locationLoading, setDashboardError, setDashboardLoading, setStatistics, statistics]);
+  }, [location, locationLoading, setDashboardError, setDashboardLoading, setStatistics]);
   
   // Calculate mood score as percentage based on average mood (assuming 0-10 scale)
   const moodScore = statistics ? Math.round(statistics.average_mood * 10) : 75;
   
-  // Get today's date
-  const today = new Date();
-  const dateOptions: Intl.DateTimeFormatOptions = { 
-    weekday: 'short', 
-    day: 'numeric', 
-    month: 'short',
-    year: 'numeric'
-  };
-  const formattedDate = today.toLocaleDateString('en-US', dateOptions);
-  
+  // Get user's first name for personalized greeting
   const firstName = userSettings.name.split(' ')[0] || 'User';
 
   // Get mood status based on percentage
@@ -109,6 +107,67 @@ const Dashboard: React.FC = () => {
     if (moodScore >= 20) return '🙁';
     return '😔';
   };
+  
+  // Get color theme based on mood score
+  const getMoodThemeColor = () => {
+    if (moodScore >= 60) return 'text-teal';
+    if (moodScore >= 40) return 'text-blue';
+    return 'text-red-700';
+  };
+  
+  // Set background color based on mood score 
+  useEffect(() => {
+    const root = document.documentElement;
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    
+    if (moodScore >= 60) {
+      // Happy/good mood - keep the teal theme
+      if (isDarkMode) {
+        root.style.setProperty('--neuro-bg', '160, 48%, 15%');
+        root.style.setProperty('--neuro-shadow-dark', '160, 48%, 10%');
+        root.style.setProperty('--neuro-shadow-light', '160, 48%, 20%');
+      } else {
+        root.style.setProperty('--neuro-bg', '160, 48%, 95%');
+        root.style.setProperty('--neuro-shadow-dark', '160, 48%, 85%');
+        root.style.setProperty('--neuro-shadow-light', '0, 0%, 100%');
+      }
+    } else if (moodScore >= 40) {
+      // Neutral mood - blue theme
+      if (isDarkMode) {
+        root.style.setProperty('--neuro-bg', '210, 65%, 15%');
+        root.style.setProperty('--neuro-shadow-dark', '210, 65%, 10%');
+        root.style.setProperty('--neuro-shadow-light', '210, 65%, 20%');
+      } else {
+        root.style.setProperty('--neuro-bg', '210, 65%, 95%');
+        root.style.setProperty('--neuro-shadow-dark', '210, 65%, 85%');
+        root.style.setProperty('--neuro-shadow-light', '0, 0%, 100%');
+      }
+    } else {
+      // Low mood - deeper red theme that's not glossy
+      if (isDarkMode) {
+        root.style.setProperty('--neuro-bg', '350, 40%, 12%');
+        root.style.setProperty('--neuro-shadow-dark', '350, 40%, 8%');
+        root.style.setProperty('--neuro-shadow-light', '350, 30%, 18%');
+      } else {
+        root.style.setProperty('--neuro-bg', '350, 35%, 92%');
+        root.style.setProperty('--neuro-shadow-dark', '350, 35%, 82%');
+        root.style.setProperty('--neuro-shadow-light', '0, 0%, 100%');
+      }
+    }
+    
+    // Restore default theme when component unmounts
+    return () => {
+      if (isDarkMode) {
+        root.style.setProperty('--neuro-bg', '160, 48%, 15%');
+        root.style.setProperty('--neuro-shadow-dark', '160, 48%, 10%');
+        root.style.setProperty('--neuro-shadow-light', '160, 48%, 20%');
+      } else {
+        root.style.setProperty('--neuro-bg', '160, 48%, 95%');
+        root.style.setProperty('--neuro-shadow-dark', '160, 48%, 85%');
+        root.style.setProperty('--neuro-shadow-light', '0, 0%, 100%');
+      }
+    };
+  }, [moodScore]);
   
   const handleMoodSelect = async (mood: number) => {
     console.log('Selected mood:', mood);
@@ -137,8 +196,9 @@ const Dashboard: React.FC = () => {
   return (
     <div className="neuro-container pb-24">
       {/* Regular header with page title */}
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-teal">MoodUp</h1>
+      <header className="flex justify-between items-center mb-4">
+        <div className="w-8"></div> {/* Spacer to balance the layout */}
+        <h1 className={`text-2xl font-extrabold ${getMoodThemeColor()} text-center`}>MoodUp</h1>
         <UserAvatar />
       </header>
       
@@ -149,36 +209,27 @@ const Dashboard: React.FC = () => {
         </div>
       )}
       
-      {/* Location info */}
-      {location && (
-        <div className="mb-4 text-sm text-gray-600">
-          <span className="material-icons text-sm align-text-top mr-1">location_on</span>
-          Location: {location.name || `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`}
-        </div>
-      )}
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
         <div>
           {/* Enhanced Unified Mood Dashboard Card */}
-          <div className="neuro-card overflow-hidden mb-6">
+          <div className="neuro-card overflow-hidden mb-4">
             {/* Top greeting section with integrated design */}
-            <div className="px-6 pt-6 pb-0">
+            <div className="px-6 pt-4 pb-0">
               <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center">
-                  <span className="material-icons text-sm mr-1 text-teal">calendar_today</span>
-                  <div className="text-sm text-gray-600">{formattedDate}</div>
+              {location && (
+                <div className="mb-4 text-sm text-gray-600">
+                  <span className="material-icons text-sm align-text-top mr-1">location_on</span>
+                  Location: {location.name || `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`}
                 </div>
-                <span className="neuro-inset py-0.5 px-2 rounded-full text-xs font-medium flex items-center text-teal">
-                  <span className="material-icons text-xs mr-1">star</span>
-                  Pro
-                </span>
+              )}
+                
               </div>
               
               <div className="flex items-center mb-4">
                 <UserAvatar size="lg" className="mr-4" />
                 
                 <div>
-                  <h1 className="text-3xl font-bold mb-1 text-teal">
+                  <h1 className={`text-3xl font-bold mb-1 ${getMoodThemeColor()}`}>
                     Hi, {firstName}!
                   </h1>
                   
@@ -189,10 +240,6 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
               
-              <div className="text-center mb-4">
-                <h2 className="text-xl font-semibold text-teal">Today's Mood Prediction</h2>
-                <p className="text-sm text-gray-500">Based on your environment and location</p>
-              </div>
             </div>
             
             {/* Large enhanced mood circle */}
@@ -207,13 +254,13 @@ const Dashboard: React.FC = () => {
           
           {/* AI Mood Analysis */}
           {statistics?.ai_mood_analysis && (
-            <AIMoodAnalysis moodAnalysis={statistics.ai_mood_analysis} />
+            <AIMoodAnalysis moodAnalysis={statistics.ai_mood_analysis} moodScore={moodScore} />
           )}
           
           {/* Mood Stats Card */}
           {statistics && (
-            <div className="neuro-card p-5 mb-6">
-              <h3 className="text-md font-semibold text-teal mb-4">Your Mood Stats</h3>
+            <div className="neuro-card p-4 mb-4">
+              <h3 className={`text-md font-semibold ${getMoodThemeColor()} mb-4`}>Your Mood Stats</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="neuro-inset p-3 rounded-lg">
                   <div className="text-xs text-gray-500 mb-1">Average Mood</div>
@@ -239,8 +286,8 @@ const Dashboard: React.FC = () => {
           
           {/* Mood Factors Card */}
           {statistics?.highest_mood?.factors && (
-            <div className="neuro-card p-5 mb-6">
-              <h3 className="text-md font-semibold text-teal mb-3">Mood Factors</h3>
+            <div className="neuro-card p-4 mb-4">
+              <h3 className={`text-md font-semibold ${getMoodThemeColor()} mb-3`}>Mood Factors</h3>
               <ul className="neuro-inset p-4 rounded-lg text-sm list-disc pl-5">
                 {statistics.highest_mood.factors.map((factor, index) => (
                   <li key={index} className="mb-2">{factor}</li>
@@ -251,8 +298,8 @@ const Dashboard: React.FC = () => {
           
           <MoodInput onMoodSelect={handleMoodSelect} />
           
-          <div className="mt-6 text-center">
-            <Link to="/history" className="neuro-button inline-flex items-center text-teal">
+          <div className="mt-4 text-center">
+            <Link to="/history" className={`neuro-button inline-flex items-center ${getMoodThemeColor()}`}>
               <span className="material-icons mr-2 text-sm">history</span>
               View Mood History
             </Link>

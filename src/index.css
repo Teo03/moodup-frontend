@@ -7,7 +7,7 @@
     /* Primary theme colors */
     --teal-hsl: 160 48% 38%;       /* #3BA181 */
     --yellow-hsl: 43 100% 52%;     /* #FFD80B */
-    --tan-hsl: 36 28% 63%;         /* #C0A883 */
+    --blue-hsl: 210 65% 60%;       /* #5A96E3 */
     --white-hsl: 0 0% 100%;        /* #FFFFFF */
     
     /* Base theme */
@@ -26,7 +26,7 @@
     --secondary: var(--yellow-hsl);
     --secondary-foreground: var(--white-hsl);
  
-    --muted: var(--tan-hsl);
+    --muted: var(--blue-hsl);
     --muted-foreground: var(--teal-hsl);
  
     --accent: var(--yellow-hsl);
@@ -35,8 +35,8 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: var(--white-hsl);
 
-    --border: var(--tan-hsl);
-    --input: var(--tan-hsl);
+    --border: var(--blue-hsl);
+    --input: var(--blue-hsl);
     --ring: var(--yellow-hsl);
  
     --radius: 0.5rem;
@@ -64,17 +64,17 @@
     --secondary: var(--yellow-hsl);
     --secondary-foreground: var(--white-hsl);
  
-    --muted: var(--tan-hsl);
+    --muted: var(--blue-hsl);
     --muted-foreground: var(--white-hsl);
  
-    --accent: var(--tan-hsl);
+    --accent: var(--blue-hsl);
     --accent-foreground: var(--white-hsl);
  
     --destructive: 0 63% 31%;
     --destructive-foreground: var(--white-hsl);
  
-    --border: var(--tan-hsl);
-    --input: var(--tan-hsl);
+    --border: var(--blue-hsl);
+    --input: var(--blue-hsl);
     --ring: var(--yellow-hsl);
 
     /* Neumorphic colors for dark mode */
@@ -119,6 +119,8 @@
     background: linear-gradient(145deg, hsl(var(--neuro-bg)), hsl(var(--neuro-shadow-light)));
     box-shadow: 8px 8px 16px hsl(var(--neuro-shadow-dark)),
                 -8px -8px 16px hsl(var(--neuro-shadow-light));
+    position: relative;
+    padding: 10px;
   }
 
   .mood-progress-ring {

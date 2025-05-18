@@ -51,8 +51,9 @@ const Settings: React.FC = () => {
   return (
     <div className="neuro-container pb-24">
       {/* Regular header with page title */}
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-teal">Settings</h1>
+      <header className="flex justify-between items-center mb-4">
+        <div className="w-10"></div> {/* Spacer to balance the layout */}
+        <h1 className="text-2xl font-extrabold text-teal text-center">Settings</h1>
         <Link to="/">
           <div className="neuro-button py-2 px-4">
             <span className="material-icons text-sm mr-1">arrow_back</span>
@@ -62,9 +63,9 @@ const Settings: React.FC = () => {
       </header>
 
       <div className="neuro-card">
-        <h2 className="text-xl font-semibold text-teal mb-6">Profile Settings</h2>
+        <h2 className="text-xl font-semibold text-teal mb-4">Profile Settings</h2>
         
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Your Name</label>
           <input
             type="text"
@@ -75,7 +76,7 @@ const Settings: React.FC = () => {
           />
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Profile Picture</label>
           
           <div className="flex items-center mb-4">

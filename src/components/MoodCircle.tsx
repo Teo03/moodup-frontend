@@ -20,7 +20,7 @@ const MoodCircle: React.FC<MoodCircleProps> = ({
 }) => {
   // Updated dimensions and radii for more spacing
   const isLarge = size === 'large';
-  const baseRadius = isLarge ? 130 : 100; // Radius for the centerline of the outermost ring
+  const baseRadius = isLarge ? 110 : 90; // Reduced radius to ensure circles fit within the container
   
   // State for animations
   const [animatedScore, setAnimatedScore] = useState(0);
@@ -36,7 +36,7 @@ const MoodCircle: React.FC<MoodCircleProps> = ({
       return [
         { name: 'Temperature', impact: 25, points: 20, color: 'hsl(160, 48%, 60%)' }, 
         { name: 'Cloud Cover', impact: 15, points: 15, color: 'hsl(43, 100%, 60%)' }, 
-        { name: 'Visibility', impact: 10, points: 10, color: 'hsl(36, 28%, 63%)' }    
+        { name: 'Visibility', impact: 10, points: 10, color: 'hsl(210, 65%, 60%)' }    
       ];
     }
     
@@ -50,7 +50,7 @@ const MoodCircle: React.FC<MoodCircleProps> = ({
         else if (name.includes(' of ')) name = name.split(' of ')[0];
         
         const colors = [
-          'hsl(160, 48%, 60%)', 'hsl(43, 100%, 60%)', 'hsl(36, 28%, 63%)',  
+          'hsl(160, 48%, 60%)', 'hsl(43, 100%, 60%)', 'hsl(210, 65%, 60%)',  
           'hsl(160, 48%, 80%)', 'hsl(43, 100%, 80%)'
         ];
         moodFactors.push({ name, impact, points, color: colors[index % colors.length] });
@@ -62,7 +62,7 @@ const MoodCircle: React.FC<MoodCircleProps> = ({
       return [
         { name: 'Weather', impact: 35, points: Math.round(basePoints * 1.4), color: 'hsl(160, 48%, 60%)' },
         { name: 'Environment', impact: 25, points: Math.round(basePoints), color: 'hsl(43, 100%, 60%)' },
-        { name: 'Other', impact: 15, points: Math.round(basePoints * 0.6), color: 'hsl(36, 28%, 63%)' }
+        { name: 'Other', impact: 15, points: Math.round(basePoints * 0.6), color: 'hsl(210, 65%, 60%)' }
       ];
     }
     return moodFactors;
@@ -93,9 +93,9 @@ const MoodCircle: React.FC<MoodCircleProps> = ({
   const getMoodColor = (score: number) => {
     if (score >= 90) return { color: '#3BA181' }; if (score >= 80) return { color: '#4fb996' };
     if (score >= 70) return { color: '#63c1a0' }; if (score >= 60) return { color: '#77caab' };
-    if (score >= 50) return { color: '#8bd3b6' }; if (score >= 40) return { color: '#ff6666' };
-    if (score >= 30) return { color: '#ff3333' }; if (score >= 20) return { color: '#ff0000' };
-    if (score >= 10) return { color: '#cc0000' }; return { color: '#990000' };
+    if (score >= 50) return { color: '#8bd3b6' }; if (score >= 40) return { color: '#8a9eb8' };
+    if (score >= 30) return { color: '#9191b7' }; if (score >= 20) return { color: '#933a48' };
+    if (score >= 10) return { color: '#801f2c' }; return { color: '#6a1a24' };
   };
 
   const dimensions = isLarge ? 'w-64 h-64' : 'w-56 h-56';
@@ -103,12 +103,12 @@ const MoodCircle: React.FC<MoodCircleProps> = ({
   const scoreSize = isLarge ? 'text-7xl' : 'text-6xl';
 
   const totalPoints = factorsData.reduce((sum, factor) => sum + factor.points, 0) || 1; // Avoid division by zero
-  const strokeWidth = 14;
-  const ringCenterlineSpacing = 20; // Space between centerlines of adjacent rings
+  const strokeWidth = 12; // Reduced stroke width
+  const ringCenterlineSpacing = 18; // Reduced spacing between rings
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className={`mood-circle ${dimensions} mb-4 relative`}>
+      <div className={`mood-circle ${dimensions} mb-4 relative overflow-visible`}>
         {factorsData.map((factor, index) => {
           const currentRingRadius = baseRadius - (index * ringCenterlineSpacing);
           if (currentRingRadius <= strokeWidth / 2) return null; // Don't draw if radius is too small or zero
@@ -137,6 +137,7 @@ const MoodCircle: React.FC<MoodCircleProps> = ({
                 opacity={factor.points > 0 ? "1" : "0.3"}
                 transform={`rotate(-90 ${centerPoint} ${centerPoint})`}
                 style={{ transition: 'stroke-dasharray 1s ease-out' }} // Animate the dash array for effect
+                vectorEffect="non-scaling-stroke" // Maintains stroke width when SVG is scaled
               />
             </svg>
           );

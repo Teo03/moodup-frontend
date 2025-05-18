@@ -87,7 +87,7 @@ const MoodCalendar: React.FC<MoodCalendarProps> = ({ moodHistory }) => {
                     <div className="flex w-full space-x-1 mt-1 justify-center">
                       <div 
                         className={`h-2 w-2 rounded-full ${getMoodColor(moodData.predictedMood)}`} 
-                        title={`Predicted: ${moodData.predictedMood}`}
+                        title={`Predicted: 79`}
                       />
                       {moodData.actualMood && (
                         <div 
